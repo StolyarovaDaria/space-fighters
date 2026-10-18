@@ -10,7 +10,7 @@ public class GameLoop implements Runnable {
     private final int FPS = 60;
     private final long FRAME_TIME = 1000 / FPS;
 
-    public GameLoop(GameManager manager, Gamepanel panel) {
+    public GameLoop(GameManager manager, GamePanel panel) {
         this.manager = manager;
         this.panel = panel;
     }
