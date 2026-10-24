@@ -1,7 +1,7 @@
 package ui;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-public class InputHandler {
+public class InputHandler implements KeyListener {
     private boolean up, down, left, right, shoot;
     private boolean pause, start;
     private boolean pauseConsumed = true;
