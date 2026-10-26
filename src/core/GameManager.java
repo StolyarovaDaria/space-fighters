@@ -12,16 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameManager {
-
     private GameState state = GameState.MENU;
     private int screenWidth;
     private int screenHeight;
-
+    private int difficulty = 1; // 0 = Easy, 1 = Normal, 2 = Hard
     private Player player;
     private List<Entity> entities = new ArrayList<>();
     private List<Entity> toAdd = new ArrayList<>();
-
     private InputHandler input;
+    private CollisionManager collisionManager = new CollisionManager();
+    private ComboManager comboManager = new ComboManager();
+    private ui.Renderer renderer = new ui.Renderer();
     private SpawnManager spawnManager;
     private ScoreManager scoreManager;
 
@@ -31,8 +32,8 @@ public class GameManager {
         this.screenHeight = screenHeight;
         this.spawnManager = new SpawnManager(screenWidth);
         this.scoreManager = new ScoreManager();
-        this.player = new Player(screenWidth / 2.0, screenHeight - 100);
-
+        int maxHp = (difficulty == 0) ? 150 : (difficulty == 2) ? 70 : 100;
+        this.player = new Player(screenWidth / 2.0, screenHeight - 100, maxHp);
         scoreManager.loadHighScore();
         entities.add(player);
     }
@@ -42,15 +43,12 @@ public class GameManager {
             case MENU:
                 if (input.isStart()) startGame();
                 break;
-
             case PLAYING:
                 updatePlaying();
                 break;
-
             case PAUSED:
                 if (input.isPause()) state = GameState.PLAYING;
                 break;
-
             case GAME_OVER:
                 if (input.isStart()) restart();
                 break;
@@ -59,23 +57,20 @@ public class GameManager {
 
     private void updatePlaying() {
         handlePlayerInput();
-
         for (Entity e : entities) {
             e.update();
+            if (e instanceof entities.Enemy) {
+                toAdd.addAll(((entities.Enemy) e).getPendingBullets());
+            }
         }
-
-        checkCollisions();
-
+        collisionManager.check(this);
         spawnManager.update(this);
-
-        entities.removeIf(e -> !e.isAlive());
+        entities.removeIf(e -> !e.isAlive() || e.getBounds().y > screenHeight);
         entities.addAll(toAdd);
         toAdd.clear();
-
         if (!player.isAlive()) {
             gameOver();
         }
-
         if (input.isPause()) state = GameState.PAUSED;
     }
 
@@ -83,79 +78,25 @@ public class GameManager {
         if (input.isLeft()) player.moveLeft();
         else if (input.isRight()) player.moveRight();
         else player.stopX();
-
         if (input.isUp()) player.moveUp();
         else if (input.isDown()) player.moveDown();
         else player.stopY();
-
         if (input.isShoot()) {
-            Bullet b = player.shoot();
-            if (b != null) toAdd.add(b);
+            List<Bullet> bullets = player.shoot();
+            if (bullets != null) toAdd.addAll(bullets);
         }
     }
 
-    private void checkCollisions() {
-        for (Entity a : entities) {
-            if (!a.isAlive()) continue;
-
-            for (Entity b : entities) {
-                if (a == b || !b.isAlive()) continue;
-
-                if (a instanceof Bullet && b instanceof Enemy) {
-                    if (a.getBounds().intersects(b.getBounds())) {
-                        Bullet bullet = (Bullet) a;
-                        Enemy enemy = (Enemy) b;
-
-                        if (bullet.isFromPlayer()) {
-                            enemy.takeDamage(bullet.getDamage());
-                            bullet.takeDamage(9999);
-
-                            if (!enemy.isAlive()) {
-                                scoreManager.addScore(enemy.getScoreValue());
-                            }
-                        }
-                    }
-                }
-
-                if (a instanceof Enemy && b == player) {
-                    if (a.getBounds().intersects(b.getBounds())) {
-                        player.takeDamage(20);
-                        a.takeDamage(9999);
-                    }
-                }
-
-                if (a instanceof PowerUp && b == player) {
-                    if (a.getBounds().intersects(b.getBounds())) {
-                        PowerUp p = (PowerUp) a;
-                        applyPowerUp(p);
-                        a.takeDamage(9999);
-                    }
-                }
-            }
-        }
-    }
-
-    private void applyPowerUp(PowerUp p) {
-        switch (p.getType()) {
-            case HEAL:
-                player.heal(30);
-                break;
-            case WEAPON_UP:
-                player.upgradeWeapon();
-                break;
-            case SHIELD:
-                player.activateShield();
-                break;
-            case SPEED:
-                player.speedUp();
-                break;
-        }
+    public void setDifficulty(int diff) {
+        this.difficulty = diff;
+        if (spawnManager != null) spawnManager.setDifficulty(diff);
     }
 
     public void startGame() {
         entities.clear();
         toAdd.clear();
-        player = new Player(screenWidth / 2.0, screenHeight - 100);
+        int maxHp = (difficulty == 0) ? 150 : (difficulty == 2) ? 70 : 100;
+        player = new Player(screenWidth / 2.0, screenHeight - 100, maxHp);
         entities.add(player);
         scoreManager.reset();
         spawnManager.reset();
@@ -183,9 +124,7 @@ public class GameManager {
     }
 
     public void draw(Graphics2D g) {
-        for (Entity e : entities) {
-            e.draw(g);
-        }
+        renderer.drawEntities(g, entities);
     }
 
     public GameState getState() {
@@ -206,4 +145,6 @@ public class GameManager {
     public int getScreenHeight() {
         return screenHeight;
     }
+    public List<Entity> getEntities() { return entities; }
+    public ComboManager getComboManager() { return comboManager; }
 }
