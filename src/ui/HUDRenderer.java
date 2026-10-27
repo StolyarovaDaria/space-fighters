@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 public class HUDRenderer {
 
     private final Font font = new Font("Arial", Font.BOLD, 18);
+    private final Font comboFont = new Font("Arial", Font.BOLD, 24);
 
     public void draw(Graphics2D g, GameManager manager) {
         g.setFont(font);
@@ -33,5 +34,11 @@ public class HUDRenderer {
 
         g.setColor(Color.WHITE);
         g.drawString("HP: " + hp + "/" + maxHp, 230, 86);
+        int combo = manager.getComboManager().getCombo();
+        if (combo > 1) {
+            g.setFont(comboFont);
+            g.setColor(Color.YELLOW);
+            g.drawString("COMBO x" + combo, 20, 120);
+        }
     }
 }
