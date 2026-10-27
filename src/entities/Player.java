@@ -75,6 +75,10 @@ public class Player extends GameObject {
         speedEndTime = System.currentTimeMillis() + SPEED_DURATION_MS;
     }
 
+    public int getMaxHp() {
+       return maxHp;
+    }
+
     public boolean isInvulnerable() {
         return System.currentTimeMillis() < invulnEndTime;
     }
