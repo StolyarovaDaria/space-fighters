@@ -22,7 +22,6 @@ public class GameManager {
     private InputHandler input;
     private CollisionManager collisionManager = new CollisionManager();
     private ComboManager comboManager = new ComboManager();
-    private ui.Renderer renderer = new ui.Renderer();
     private SpawnManager spawnManager;
     private ScoreManager scoreManager;
 
@@ -41,6 +40,9 @@ public class GameManager {
     public void update() {
         switch (state) {
             case MENU:
+                if (input.isDiff1()) setDifficulty(0); // Easy
+                if (input.isDiff2()) setDifficulty(1); // Normal
+                if (input.isDiff3()) setDifficulty(2); // Hard
                 if (input.isStart()) startGame();
                 break;
             case PLAYING:
@@ -121,10 +123,6 @@ public class GameManager {
             if (e instanceof Enemy) return true;
         }
         return false;
-    }
-
-    public void draw(Graphics2D g) {
-        renderer.drawEntities(g, entities);
     }
 
     public GameState getState() {
