@@ -5,6 +5,7 @@ public class InputHandler implements KeyListener {
     private boolean up, down, left, right, shoot;
     private boolean pause, start;
     private boolean diff1, diff2, diff3;
+    private boolean menu;
     private boolean pauseConsumed = true;
     private boolean startConsumed = true;
     public boolean isUp()    { return up;    }
@@ -15,6 +16,7 @@ public class InputHandler implements KeyListener {
     public boolean isDiff1() { return diff1; }
     public boolean isDiff2() { return diff2; }
     public boolean isDiff3() { return diff3; }
+    public boolean isMenu() { return menu; }
     public boolean isPause() {
         if (pause && pauseConsumed) {
             pauseConsumed = false;
@@ -36,6 +38,7 @@ public class InputHandler implements KeyListener {
             case KeyEvent.VK_A, KeyEvent.VK_LEFT  -> left  = true;
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> right = true;
             case KeyEvent.VK_SPACE -> shoot = true;
+            case KeyEvent.VK_M -> menu = true;
             case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> pause = true;
             case KeyEvent.VK_ENTER -> start = true;
             case KeyEvent.VK_1 -> diff1 = true;
@@ -53,6 +56,7 @@ public class InputHandler implements KeyListener {
             case KeyEvent.VK_1 -> diff1 = false;
             case KeyEvent.VK_2 -> diff2 = false;
             case KeyEvent.VK_3 -> diff3 = false;
+            case KeyEvent.VK_M -> menu = false;
             case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> { pause = false; pauseConsumed = true; }
             case KeyEvent.VK_ENTER -> { start = false; startConsumed = true; }
 

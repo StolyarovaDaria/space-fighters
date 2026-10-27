@@ -42,7 +42,8 @@ public class MenuRenderer {
         g.drawString("PAUSED", 320, 280);
 
         g.setFont(fontMenu);
-        g.drawString("Press P to resume", 290, 340);
+        g.drawString("Press P to resume", 305, 340);
+        g.drawString("Press M to return to Menu", 270, 380);
     }
 
     public void drawGameOver(Graphics2D g, GameManager manager) {
