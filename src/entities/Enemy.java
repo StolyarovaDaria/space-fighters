@@ -41,11 +41,10 @@ public class Enemy extends GameObject {
             if (currentlyStopped &&
                 System.currentTimeMillis() - stopStartTime >= STOP_DURATION_MS) {
                 currentlyStopped = false;
-                dy = originalDy;            // снова летит вниз — не застрянет
+                dy = originalDy;
             }
         }
 
-        // стрельба раз в 3 секунды, только пока враг на/над экраном
         long now = System.currentTimeMillis();
         if (y >= 0 && now - lastShotTime >= SHOOT_INTERVAL_MS) {
             lastShotTime = now;
@@ -58,7 +57,7 @@ public class Enemy extends GameObject {
 
     private void fire() {
         pendingBullets.add(
-            new Bullet(x + width / 2.0 - 3, y + height, 0, 4, false)  // вниз, дефолтный урон 5
+            new Bullet(x + width / 2.0 - 3, y + height, 0, 4, false)
         );
     }
 
