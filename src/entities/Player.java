@@ -46,7 +46,6 @@ public class Player extends GameObject {
     public void stopX()     { dx = 0; }
     public void stopY()     { dy = 0; }
 
-    /** Две пули — из левой и правой пушки. null, если ещё кулдаун. */
     public List<Bullet> shoot() {
         long now = System.currentTimeMillis();
         if (now - lastShotTime < shotCooldown) return null;
@@ -87,11 +86,9 @@ public class Player extends GameObject {
     public void update() {
         super.update();
 
-        // телепорт по горизонтали (Пакман)
         if (x + width < 0)         x = WORLD_WIDTH;
         else if (x > WORLD_WIDTH)  x = -width;
 
-        // телепорт по вертикали (Пакман)
         if (y + height < 0)        y = WORLD_HEIGHT;
         else if (y > WORLD_HEIGHT) y = -height;
     }

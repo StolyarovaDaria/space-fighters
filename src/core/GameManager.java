@@ -50,6 +50,7 @@ public class GameManager {
                 break;
             case PAUSED:
                 if (input.isPause()) state = GameState.PLAYING;
+                if (input.isMenu()) state = GameState.MENU;
                 break;
             case GAME_OVER:
                 if (input.isStart()) restart();

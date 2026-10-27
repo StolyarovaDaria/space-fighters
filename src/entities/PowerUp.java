@@ -3,7 +3,7 @@ package entities;
 public class PowerUp extends GameObject {
     public enum Type {
         HEAL,
-        FIRE_RATE,   // было WEAPON_UP
+        FIRE_RATE,
         SHIELD,
         SPEED
     }
