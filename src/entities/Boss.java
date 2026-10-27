@@ -28,7 +28,7 @@ public class Boss extends Enemy {
 
     @Override
     public void update() {
-        // super.update() не вызываем — Boss не должен умирать от y > 600
+    
         if (y < STOP_Y) y += dy;
 
         x += dx;
@@ -45,14 +45,12 @@ public class Boss extends Enemy {
 
     private void fire() {
         double cx = x + width / 2.0;
-        double by = y + height;             // низ босса
+        double by = y + height;             
 
-        // 3 пушки спереди (смотрят вниз)
         pendingBullets.add(new Bullet(x + 22,          by, -2, 5, false, 10)); // спереди-лево
         pendingBullets.add(new Bullet(cx - 3,          by,  0, 5, false, 10)); // центр
         pendingBullets.add(new Bullet(x + width - 28,  by,  2, 5, false, 10)); // спереди-право
 
-        // 2 боковые пушки
         double sideY = y + height / 2.0 - 6;
         pendingBullets.add(new Bullet(x - 3,           sideY, -4, 3, false, 10)); // левый бок
         pendingBullets.add(new Bullet(x + width - 3,   sideY,  4, 3, false, 10)); // правый бок
