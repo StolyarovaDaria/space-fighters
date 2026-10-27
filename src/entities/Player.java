@@ -54,8 +54,8 @@ public class Player extends GameObject {
 
         int damage = 10;
         List<Bullet> bullets = new ArrayList<>(2);
-        bullets.add(new Bullet(x + 8,             y - 14, 0, -10, true, damage)); // левая
-        bullets.add(new Bullet(x + width - 14,    y - 14, 0, -10, true, damage)); // правая
+        bullets.add(new Bullet(x + 8,          y - 14, 0, -15, true, damage)); // левая
+        bullets.add(new Bullet(x + width - 14, y - 14, 0, -15, true, damage)); // правая
         return bullets;
     }
 
