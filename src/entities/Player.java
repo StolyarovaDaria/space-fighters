@@ -1,128 +1,104 @@
 package entities;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends GameObject {
-    private static final int MAX_HP = 100;
     private static final double BASE_SPEED = 5.0;
-    private static final long SHOT_COOLDOWN_MS = 250;
+    private static final double SPEED_MULT = 1.5;
+    private static final long   SPEED_DURATION_MS = 5000;
+    private static final long   SHIELD_DURATION_MS = 5000;
+    private static final long   INVULN_MS = 1000;
+
+    private static final long   INITIAL_SHOT_COOLDOWN = 250;
+    private static final long   MIN_SHOT_COOLDOWN = 100;
+
+    private static final int    WORLD_WIDTH = 800;
+    private static final int    WORLD_HEIGHT = 600;
+
+    private final int maxHp;
 
     private long lastShotTime = 0;
-    private int weaponLevel = 1;
+    private long shotCooldown = INITIAL_SHOT_COOLDOWN;
 
     private long shieldEndTime = 0;
     private long speedEndTime = 0;
+    private long invulnEndTime = 0;
 
-    public Player(double x, double y) {
+    public Player(double x, double y, int maxHp) {
         super(x, y);
         width = 40;
         height = 40;
-        hp = MAX_HP;
+        this.maxHp = maxHp;
+        this.hp = maxHp;
     }
 
     private double currentSpeed() {
         return System.currentTimeMillis() < speedEndTime
-                ? BASE_SPEED * 1.5
+                ? BASE_SPEED * SPEED_MULT
                 : BASE_SPEED;
     }
 
-    public void moveLeft() {
-        dx = -currentSpeed();
-    }
+    public void moveLeft()  { dx = -currentSpeed(); }
+    public void moveRight() { dx =  currentSpeed(); }
+    public void moveUp()    { dy = -currentSpeed(); }
+    public void moveDown()  { dy =  currentSpeed(); }
+    public void stopX()     { dx = 0; }
+    public void stopY()     { dy = 0; }
 
-    public void moveRight() {
-        dx = currentSpeed();
-    }
-
-    public void moveUp() {
-        dy = -currentSpeed();
-    }
-
-    public void moveDown() {
-        dy = currentSpeed();
-    }
-
-    public void stopX() {
-        dx = 0;
-    }
-
-    public void stopY() {
-        dy = 0;
-    }
-
-    public Bullet shoot() {
+    /** Две пули — из левой и правой пушки. null, если ещё кулдаун. */
+    public List<Bullet> shoot() {
         long now = System.currentTimeMillis();
-        if (now - lastShotTime < SHOT_COOLDOWN_MS) {
-            return null;
-        }
-
+        if (now - lastShotTime < shotCooldown) return null;
         lastShotTime = now;
-        int damage = 10 + (weaponLevel - 1) * 5;
 
-        return new Bullet(
-                x + width / 2.0 - 3,
-                y - 14,
-                0,
-                -10,
-                true,
-                damage
-        );
+        int damage = 10;
+        List<Bullet> bullets = new ArrayList<>(2);
+        bullets.add(new Bullet(x + 8,          y - 14, 0, -15, true, damage)); // левая
+        bullets.add(new Bullet(x + width - 14, y - 14, 0, -15, true, damage)); // правая
+        return bullets;
     }
 
     public void heal(int amount) {
-        hp = Math.min(MAX_HP, hp + amount);
+        hp = Math.min(maxHp, hp + amount);
     }
 
-    public void upgradeWeapon() {
-        if (weaponLevel < 3) {
-            weaponLevel++;
-        }
+    public void speedUpFireRate() {
+        shotCooldown = MIN_SHOT_COOLDOWN;
     }
 
     public void activateShield() {
-        shieldEndTime = System.currentTimeMillis() + 5000;
+        shieldEndTime = System.currentTimeMillis() + SHIELD_DURATION_MS;
     }
 
     public void speedUp() {
-        speedEndTime = System.currentTimeMillis() + 5000;
+        speedEndTime = System.currentTimeMillis() + SPEED_DURATION_MS;
+    }
+
+    public boolean isInvulnerable() {
+        return System.currentTimeMillis() < invulnEndTime;
     }
 
     @Override
     public void update() {
-        long now = System.currentTimeMillis();
-
-        if (shieldEndTime > 0 && now > shieldEndTime) {
-            shieldEndTime = 0;
-        }
-
-        if (speedEndTime > 0 && now > speedEndTime) {
-            speedEndTime = 0;
-        }
-
         super.update();
+
+        // телепорт по горизонтали (Пакман)
+        if (x + width < 0)         x = WORLD_WIDTH;
+        else if (x > WORLD_WIDTH)  x = -width;
+
+        // телепорт по вертикали (Пакман)
+        if (y + height < 0)        y = WORLD_HEIGHT;
+        else if (y > WORLD_HEIGHT) y = -height;
     }
 
     @Override
     public void takeDamage(int damage) {
-        if (System.currentTimeMillis() < shieldEndTime) {
-            return;
-        }
+        long now = System.currentTimeMillis();
+        if (now < shieldEndTime) return;
+        if (now < invulnEndTime) return;
 
         super.takeDamage(damage);
-    }
-
-    @Override
-    public void draw(Graphics2D g) {
-        g.setColor(new Color(80, 160, 255));
-        g.fillRect((int) x, (int) y, width, height);
-
-        g.setColor(Color.WHITE);
-        g.fillRect((int) x + width / 2 - 3, (int) y + 8, 6, height / 2);
-
-        if (System.currentTimeMillis() < shieldEndTime) {
-            g.setColor(new Color(0, 255, 255, 150));
-            g.drawOval((int) x - 5, (int) y - 5, width + 10, height + 10);
-        }
+        invulnEndTime = now + INVULN_MS;
     }
 }
