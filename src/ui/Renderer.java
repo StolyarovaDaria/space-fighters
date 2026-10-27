@@ -3,9 +3,7 @@ package ui;
 import core.GameManager;
 import core.GameState;
 import entities.*;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.List;
 
 public class Renderer {
@@ -15,104 +13,115 @@ public class Renderer {
 
     public void draw(Graphics2D g, GameManager manager) {
         background.draw(g);
-
         switch (manager.getState()) {
-            case PLAYING -> {
-                drawEntities(g, manager.getEntities());
-                hud.draw(g, manager);
-            }
-            case PAUSED -> {
-                drawEntities(g, manager.getEntities());
-                hud.draw(g, manager);
-                menu.drawPause(g);
-            }
+            case PLAYING -> { drawEntities(g, manager.getEntities()); hud.draw(g, manager); }
+            case PAUSED -> { drawEntities(g, manager.getEntities()); hud.draw(g, manager); menu.drawPause(g); }
             case MENU -> menu.drawMenu(g);
             case GAME_OVER -> menu.drawGameOver(g, manager);
         }
     }
 
     private void drawEntities(Graphics2D g, List<Entity> entities) {
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         for (Entity e : entities) {
-            if (e instanceof Player) drawPlayer(g, (Player) e);
-            else if (e instanceof Boss) drawBoss(g, (Boss) e);
-            else if (e instanceof Enemy) drawEnemy(g, (Enemy) e);
-            else if (e instanceof Bullet) drawBullet(g, (Bullet) e);
-            else if (e instanceof PowerUp) drawPowerUp(g, (PowerUp) e);
-        }
-    }
+            int x = (int) e.getBounds().getX();
+            int y = (int) e.getBounds().getY();
 
-    private void drawPlayer(Graphics2D g, Player p) {
-        if (p.isInvulnerable() && (System.currentTimeMillis() / 100) % 2 == 0) {
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-        }
-        int x = (int) p.getX(), y = (int) p.getY();
-        Color blue = new Color(0, 80, 220), darkRed = new Color(200, 20, 20), gray = new Color(128, 128, 128);
+            if (e instanceof Player) {
+                Player p = (Player) e;
+                if (p.isInvulnerable() && (System.currentTimeMillis() / 100) % 2 == 0) {
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+                }
+                int cx = x + 20; int cy = y + 20;
 
-        g.setColor(blue);    g.fillRoundRect(x + 10, y - 10, 25, 25, 20, 20);
-        g.setColor(gray);    g.fillPolygon(new int[]{x - 20, x + 5, x + 5, x - 30}, new int[]{y + 20, y + 20, y + 45, y + 45}, 4);
-        g.setColor(gray);    g.fillPolygon(new int[]{x + 40, x + 65, x + 75, x + 40}, new int[]{y + 20, y + 20, y + 45, y + 45}, 4);
-        g.setColor(darkRed); g.fillRoundRect(x - 5, y + 10, 10, 40, 8, 8);
-        g.setColor(darkRed); g.fillRoundRect(x + 35, y + 10, 10, 40, 8, 8);
-        g.setColor(gray);    g.fillRect(x - 5, y + 20, 55, 30);
-        g.setColor(blue);    g.fillRoundRect(x + 5, y + 45, 35, 25, 10, 10);
-        g.setColor(blue);    g.fillRoundRect(x + 5, y + 65, 12, 15, 5, 5);
-        g.setColor(blue);    g.fillRoundRect(x + 28, y + 65, 12, 15, 5, 5);
-        g.setColor(new Color(150, 220, 255)); g.fillRoundRect(x + 13, y + 2, 19, 12, 8, 8);
 
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-    }
+                g.setColor(new Color(150, 150, 170));
+                g.fillPolygon(new int[]{cx - 25, cx - 5, cx - 5}, new int[]{cy + 10, cy - 10, cy + 20}, 3);
+                g.fillPolygon(new int[]{cx + 25, cx + 5, cx + 5}, new int[]{cy + 10, cy - 10, cy + 20}, 3);
 
-    private void drawBoss(Graphics2D g, Boss b) {
-        int x = (int) b.getX(), y = (int) b.getY();
+                g.setColor(new Color(220, 30, 30));
+                g.fillPolygon(new int[]{cx - 18, cx - 8, cx - 8}, new int[]{cy + 8, cy, cy + 15}, 3);
+                g.fillPolygon(new int[]{cx + 18, cx + 8, cx + 8}, new int[]{cy + 8, cy, cy + 15}, 3);
 
-        g.setColor(new Color(180, 0, 0));
-        g.fillPolygon(new int[]{x+10, x+40, x+55, x+75, x+90, x+115, x+130, x+150, x+170, x+190, x+210, x+225, x+245, x+270, x+270, x+210, x+140, x+70, x+10},
-                new int[]{y+60, y+40, y+60, y+40, y+60, y+40, y+40, y+80, y+80, y+40, y+40, y+60, y+40, y+60, y+80, y+100, y+120, y+100, y+80}, 19);
+                g.setColor(new Color(0, 100, 255));
+                g.fillRoundRect(cx - 10, cy - 15, 20, 40, 15, 15);
 
-        g.setColor(new Color(255, 150, 0)); g.fillPolygon(new int[]{x+35, x+245, x+215, x+65}, new int[]{y+75, y+75, y+95, y+95}, 4);
+                g.setColor(new Color(100, 200, 255));
+                g.fillRoundRect(cx - 5, cy - 10, 10, 15, 5, 5);
 
-        g.setColor(new Color(255, 180, 0)); int s = 25;
-        g.fillOval(x + 20, y + 90, s, s);  g.fillOval(x + 240, y + 90, s, s);
-        g.fillOval(x + 70, y + 115, s, s); g.fillOval(x + 180, y + 115, s, s);
-        g.fillOval(x + 125, y + 125, s, s);
-    }
+                g.setColor(new Color(220, 30, 30));
+                g.fillRect(cx - 8, cy + 20, 4, 8); g.fillRect(cx + 4, cy + 20, 4, 8);
 
-    private void drawEnemy(Graphics2D g, Enemy e) {
-        int x = (int) e.getX(), y = (int) e.getY(), cx = x + 15, cy = y + 15;
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
-        if (e instanceof FastEnemy) {
-            g.setColor(new Color(255, 120, 0)); g.fillOval(cx - 8, cy - 20, 16, 16);
-            g.setColor(new Color(180, 0, 0));
-            g.fillPolygon(new int[]{cx-25, cx-10, cx-5}, new int[]{cy-5, cy-10, cy+10}, 3);
-            g.fillPolygon(new int[]{cx+25, cx+10, cx+5}, new int[]{cy-5, cy-10, cy+10}, 3);
-            g.fillRoundRect(cx - 10, cy - 10, 20, 15, 5, 5);
-            g.setColor(new Color(255, 215, 0));
-            g.fillPolygon(new int[]{cx-12, cx+12, cx+8, cx-8}, new int[]{cy+5, cy+5, cy+25, cy+25}, 4);
-            g.setColor(new Color(180, 0, 0));
-            g.fillPolygon(new int[]{cx-8, cx+8, cx}, new int[]{cy+25, cy+25, cy+40}, 3);
-        } else {
-            int[] px = new int[12], py = new int[12];
-            for (int i = 0; i < 12; i++) {
-                double a = Math.toRadians(i * 30 - 90);
-                int r = (i % 2 == 0) ? 25 : 10;
-                px[i] = cx + (int) (Math.cos(a) * r);
-                py[i] = cy + (int) (Math.sin(a) * r);
+            } else if (e instanceof Boss) {
+                g.setColor(new Color(80, 80, 80));
+                g.fillPolygon(new int[]{x, x + 40, x + 40, x + 10}, new int[]{y + 30, y + 10, y + 60, y + 80}, 4);
+                g.fillPolygon(new int[]{x + 260, x + 220, x + 220, x + 250}, new int[]{y + 30, y + 10, y + 60, y + 80}, 4);
+
+                g.setColor(new Color(160, 0, 0));
+                g.fillRoundRect(x + 30, y + 20, 200, 60, 20, 20);
+
+                g.setColor(new Color(200, 0, 0));
+                g.fillRect(x + 100, y, 60, 40);
+                g.fillPolygon(new int[]{x + 100, x + 160, x + 140, x + 120}, new int[]{y, y, y - 20, y - 20}, 4);
+
+                g.setColor(new Color(255, 120, 0));
+                g.fillRect(x + 40, y + 40, 180, 10);
+
+                g.setColor(new Color(60, 60, 60));
+                g.fillRect(x + 10, y + 50, 30, 20); g.fillRect(x + 220, y + 50, 30, 20);
+                g.setColor(new Color(255, 215, 0));
+                g.fillOval(x + 15, y + 65, 20, 20); g.fillOval(x + 225, y + 65, 20, 20);
+
+                g.fillOval(x + 70, y + 75, 16, 16); g.fillOval(x + 174, y + 75, 16, 16);
+                g.fillOval(x + 110, y + 85, 16, 16); g.fillOval(x + 140, y + 85, 16, 16);
+
+            } else if (e instanceof Enemy) {
+                if (e instanceof FastEnemy) {
+                    int cx = x + 15, cy = y + 15;
+                    g.setColor(new Color(255, 120, 0)); g.fillOval(cx - 8, cy - 20, 16, 16);
+                    g.setColor(new Color(180, 0, 0));
+                    g.fillPolygon(new int[]{cx - 25, cx - 10, cx - 5}, new int[]{cy - 5, cy - 10, cy + 10}, 3);
+                    g.fillPolygon(new int[]{cx + 25, cx + 10, cx + 5}, new int[]{cy - 5, cy - 10, cy + 10}, 3);
+                    g.fillRoundRect(cx - 10, cy - 10, 20, 15, 5, 5);
+                    g.setColor(new Color(255, 215, 0));
+                    g.fillPolygon(new int[]{cx - 12, cx + 12, cx + 8, cx - 8}, new int[]{cy + 5, cy + 5, cy + 25, cy + 25}, 4);
+                    g.setColor(new Color(180, 0, 0));
+                    g.fillPolygon(new int[]{cx - 8, cx + 8, cx}, new int[]{cy + 25, cy + 25, cy + 40}, 3);
+                } else {
+                    int cx = x + 15, cy = y + 15;
+                    int[] px = new int[12], py = new int[12];
+                    for (int i = 0; i < 12; i++) {
+                        double a = Math.toRadians(i * 30 - 90);
+                        int r = (i % 2 == 0) ? 25 : 10;
+                        px[i] = cx + (int) (Math.cos(a) * r);
+                        py[i] = cy + (int) (Math.sin(a) * r);
+                    }
+                    g.setColor(new Color(180, 0, 0));
+                    g.fillPolygon(px, py, 12);
+                }
+
+            } else if (e instanceof Bullet) {
+                Bullet b = (Bullet) e;
+                if (b.isFromPlayer()) {
+                    g.setColor(Color.YELLOW); g.fillRoundRect(x, y, 6, 12, 4, 4);
+                    g.setColor(Color.ORANGE); g.fillRect(x + 1, y + 12, 4, 4);
+                } else {
+                    g.setColor(Color.RED); g.fillRoundRect(x, y, 6, 12, 4, 4);
+                    g.setColor(Color.RED); g.fillRect(x + 1, y - 4, 4, 4);
+                }
+
+            } else if (e instanceof PowerUp) {
+                switch (((PowerUp) e).getType()) {
+                    case HEAL -> g.setColor(Color.GREEN);
+                    case SPEED -> g.setColor(Color.PINK);
+                    case FIRE_RATE -> g.setColor(Color.YELLOW);
+                    case SHIELD -> g.setColor(new Color(0, 255, 255));
+                }
+                g.fillRect(x, y, 24, 24);
             }
-            g.setColor(new Color(180, 0, 0)); g.fillPolygon(px, py, 12);
         }
-    }
-
-    private void drawBullet(Graphics2D g, Bullet b) {
-        g.setColor(b.isFromPlayer() ? Color.YELLOW : Color.PINK);
-        g.fillRect((int) b.getX(), (int) b.getY(), 4, 10);
-    }
-    private void drawPowerUp(Graphics2D g, PowerUp p) {
-        switch (p.getType()) {
-            case HEAL -> g.setColor(Color.GREEN);
-            case SPEED -> g.setColor(Color.PINK);
-            case FIRE_RATE -> g.setColor(Color.YELLOW);
-            case SHIELD -> g.setColor(new Color(0, 255, 255));
-        }
-        g.fillRect((int) p.getX(), (int) p.getY(), 24, 24);
     }
 }
