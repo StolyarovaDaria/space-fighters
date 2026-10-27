@@ -12,7 +12,6 @@ public abstract class GameObject implements Entity {
     protected GameObject(double x, double y) {
         this.x = x;
         this.y = y;
-        this.alive = true;
     }
 
     @Override
@@ -27,15 +26,15 @@ public abstract class GameObject implements Entity {
     }
 
     @Override
-    public boolean isAlive() {
-        return alive;
-    }
+    public boolean isAlive() { return alive; }
 
     @Override
     public void takeDamage(int damage) {
         hp -= damage;
-        if (hp <= 0) {
-            alive = false;
-        }
+        if (hp <= 0) alive = false;
     }
+
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public int getHp()   { return hp; }
 }

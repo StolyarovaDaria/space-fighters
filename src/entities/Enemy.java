@@ -1,37 +1,43 @@
 package entities;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class Enemy extends GameObject {
-    public Enemy(double x, double y) {
+    private static final int  STOP_Y = 300;
+    private static final long STOP_DURATION_MS = 2500;
+
+    protected boolean canStop = true;          // FastEnemy переопределит на false
+    private final double originalDy;
+    private boolean alreadyStopped  = false;
+    private boolean currentlyStopped = false;
+    private long    stopStartTime   = 0;
+
+    public Enemy(double x, double y, double speed) {
         super(x, y);
-        width = 36;
+        width  = 36;
         height = 36;
-        hp = 30;
-        dy = 1.5;
+        hp     = 30;
+        dy     = speed;
+        this.originalDy = speed;
     }
 
-    public int getScoreValue() {
-        return 10;
-    }
+    public int getScoreValue() { return 10; }
 
     @Override
     public void update() {
-        super.update();
-
-        if (y > 2000) {
-            alive = false;
+        if (canStop) {
+            if (!alreadyStopped && y >= STOP_Y) {
+                currentlyStopped = true;
+                alreadyStopped   = true;
+                stopStartTime    = System.currentTimeMillis();
+                dy = 0;
+            }
+            if (currentlyStopped &&
+                System.currentTimeMillis() - stopStartTime >= STOP_DURATION_MS) {
+                currentlyStopped = false;
+                dy = originalDy;                // снова летит вниз — не застрянет
+            }
         }
-    }
 
-    @Override
-    public void draw(Graphics2D g) {
-        g.setColor(new Color(220, 60, 60));
-        g.fillRect((int) x, (int) y, width, height);
-
-        g.setColor(Color.WHITE);
-        g.fillRect((int) x + 8, (int) y + 10, 6, 6);
-        g.fillRect((int) x + width - 14, (int) y + 10, 6, 6);
+        super.update();
+        if (y > 600) alive = false;
     }
 }
