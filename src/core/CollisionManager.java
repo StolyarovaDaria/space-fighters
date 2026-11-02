@@ -28,10 +28,21 @@ public class CollisionManager {
                             if (!enemy.isAlive()) {
                                 comboManager.addKill();
                                 scoreManager.addScore(enemy.getScoreValue() * comboManager.getCombo());
+                                manager.getUpgradeManager().addCoins(enemy.getScoreValue() / 2);
 
-                                if (Math.random() < 0.15) {
+                                if (player.hasLifesteal()) player.heal(2);
+
+                                if (Math.random() < 0.02) {
+                                    if (Math.random() < 0.5) {
+                                        manager.addEntity(new PowerUp(enemy.getBounds().x, enemy.getBounds().y, PowerUp.Type.RARE_ARMOR));
+                                    } else {
+                                        manager.addEntity(new PowerUp(enemy.getBounds().x, enemy.getBounds().y, PowerUp.Type.RARE_LIFESTEAL));
+                                    }
+                                }
+
+                                else if (Math.random() < 0.15) {
                                     PowerUp.Type[] types = PowerUp.Type.values();
-                                    PowerUp.Type randomType = types[(int) (Math.random() * types.length)];
+                                    PowerUp.Type randomType = types[(int) (Math.random() * 4)];
                                     manager.addEntity(new PowerUp(enemy.getBounds().x, enemy.getBounds().y, randomType));
                                 }
                             }
@@ -61,7 +72,7 @@ public class CollisionManager {
                             bullet.takeDamage(9999);
                         }
                     }
-                }
+                 }
             }
         }
     }
@@ -72,6 +83,11 @@ public class CollisionManager {
             case FIRE_RATE -> player.speedUpFireRate();
             case SHIELD -> player.activateShield();
             case SPEED -> player.speedUp();
+            case RARE_ARMOR -> {
+                player.activateArmor();
+                player.heal(50);
+            }
+            case RARE_LIFESTEAL -> player.activateLifesteal();
         }
     }
 }

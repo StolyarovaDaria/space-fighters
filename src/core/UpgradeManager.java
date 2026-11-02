@@ -22,7 +22,7 @@ public class UpgradeManager {
 
         if (coins >= cost) {
             coins -= cost;
-            if (type == 1) player.upgradeMaxHP(20);
+            if (type == 1) player.upgradeMaxHp(20);
             if (type == 2) player.upgradeDamage(5);
             if (type == 3) player.upgradeSpeed(0.5);
             return true;

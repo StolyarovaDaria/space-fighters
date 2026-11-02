@@ -24,6 +24,7 @@ public class GameManager {
     private ComboManager comboManager = new ComboManager();
     private SpawnManager spawnManager;
     private ScoreManager scoreManager;
+    private UpgradeManager upgradeManager = new UpgradeManager();
 
     public GameManager(InputHandler input, int screenWidth, int screenHeight) {
         this.input = input;
@@ -51,6 +52,9 @@ public class GameManager {
             case PAUSED:
                 if (input.isPause()) state = GameState.PLAYING;
                 if (input.isMenu()) state = GameState.MENU;
+                if (input.isUpgradeHp()) upgradeManager.buyUpgrade(1, player);
+                if (input.isUpgradeDamage()) upgradeManager.buyUpgrade(2, player);
+                if (input.isUpgradeSpeed()) upgradeManager.buyUpgrade(3, player);
                 break;
             case GAME_OVER:
                 if (input.isStart()) restart();
@@ -98,6 +102,7 @@ public class GameManager {
     public void startGame() {
         entities.clear();
         toAdd.clear();
+        upgradeManager.reset();
         int maxHp = (difficulty == 0) ? 150 : (difficulty == 2) ? 70 : 100;
         player = new Player(screenWidth / 2.0, screenHeight - 100, maxHp);
         entities.add(player);
@@ -146,4 +151,5 @@ public class GameManager {
     }
     public List<Entity> getEntities() { return entities; }
     public ComboManager getComboManager() { return comboManager; }
+    public UpgradeManager getUpgradeManager() { return upgradeManager; }
 }

@@ -3,6 +3,8 @@ package core;
 import entities.Enemy;
 import entities.FastEnemy;
 import entities.Boss;
+import entities.LaserBoss;
+import entities.HeavyBoss;
 
 public class SpawnManager {
     private int screenWidth;
@@ -37,13 +39,18 @@ public class SpawnManager {
         if (now - lastSpawnTime >= getSpawnInterval()) {
             int x = (int) (Math.random() * (screenWidth - 60)) + 30;
             if (wave % 4 == 0) {
-                manager.addEntity(new Boss(screenWidth / 2.0, -100));
+                int r = (int)(Math.random() * 3);
+                if (r == 0) manager.addEntity(new LaserBoss(screenWidth / 2.0, -100));
+                else if (r == 1) manager.addEntity(new HeavyBoss(screenWidth / 2.0, -100));
+                else manager.addEntity(new Boss(screenWidth / 2.0, -100));
             } else {
                 double enemySpeed = (difficulty == 0) ? 1.0 : (difficulty == 2) ? 2.5 : 1.5;
+                int hp = 30 + (wave * 10);
+                int dmg = 10 + (wave * 2);
                 if (Math.random() > 0.5) {
-                    manager.addEntity(new FastEnemy(x, 0, enemySpeed));
+                    manager.addEntity(new FastEnemy(x, 0, enemySpeed, hp, dmg));
                 } else {
-                    manager.addEntity(new Enemy(x, 0, enemySpeed));
+                    manager.addEntity(new Enemy(x, 0, enemySpeed, hp, dmg));
                 }
             }
 
