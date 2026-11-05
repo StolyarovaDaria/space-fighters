@@ -1,9 +1,5 @@
 package entities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class Boss extends Enemy {
     private static final int WORLD_WIDTH = 800, STOP_Y = 100;
     private static final long SHOOT_INTERVAL_MS = 2500, ENRAGE_SHOOT_INTERVAL_MS = 1200;
