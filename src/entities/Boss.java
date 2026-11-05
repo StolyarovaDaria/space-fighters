@@ -1,5 +1,7 @@
 package entities;
 
+import java.awt.Rectangle;
+
 public class Boss extends Enemy {
     private static final int WORLD_WIDTH = 800, STOP_Y = 100;
     private static final long SHOOT_INTERVAL_MS = 2500, ENRAGE_SHOOT_INTERVAL_MS = 1200;
@@ -7,7 +9,7 @@ public class Boss extends Enemy {
     private long lastBossShotTime;
 
     public Boss(double x, double y) {
-        this(x, y, 300, 10);
+        this(x, y, 900, 10);          // было 300 — теперь 3x
     }
 
     protected Boss(double x, double y, int hp, int damage) {
@@ -16,6 +18,12 @@ public class Boss extends Enemy {
         height = 140;
         dy = dx = 2.0;
         canStop = false;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        // Убираем прозрачные края картинки: по 20px с каждой стороны
+        return new Rectangle((int) x + 20, (int) y + 20, width - 40, height - 40);
     }
 
     @Override
@@ -42,13 +50,10 @@ public class Boss extends Enemy {
     }
 
     protected void fire() {
-        double cx = x + width / 2.0;
-        double by = y + height;
-
+        double cx = x + width / 2.0, by = y + height;
         pendingBullets.add(new Bullet(x + 50, by, -2, 5, false, damage));
         pendingBullets.add(new Bullet(cx - 3, by, 0, 5, false, damage));
         pendingBullets.add(new Bullet(x + width - 50, by, 2, 5, false, damage));
-
         double sideY = y + height / 2.0 - 6;
         pendingBullets.add(new Bullet(x - 3, sideY, -4, 3, false, damage));
         pendingBullets.add(new Bullet(x + width - 3, sideY, 4, 3, false, damage));

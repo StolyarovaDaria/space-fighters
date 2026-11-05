@@ -1,15 +1,13 @@
 package entities;
 
 public class FastBoss extends Boss {
-    private static final int FAST_BOSS_HP = 110;
+    private static final int FAST_BOSS_HP = 300;
     private static final int FAST_BOSS_DAMAGE = 8;
 
     public FastBoss(double x, double y) {
         super(x, y, FAST_BOSS_HP, FAST_BOSS_DAMAGE);
         dx = 4.0;
         dy = 3.0;
-        width = 75;
-        height = 65;
     }
 
     @Override

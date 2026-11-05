@@ -64,6 +64,8 @@ public class Player extends GameObject {
     public boolean hasLifesteal() { return hasLifesteal; }
     public void activateArmor() { hasArmor = true; }
     public void activateLifesteal() { hasLifesteal = true; }
+    public int getDamage() {return bulletDamage; }
+    public double getSpeed() { return baseSpeed; }
     public int getMaxHp() { return maxHp; }
     public int getBulletDamage() { return bulletDamage; }
     public boolean isInvulnerable() { return System.currentTimeMillis() < invulnEndTime; }

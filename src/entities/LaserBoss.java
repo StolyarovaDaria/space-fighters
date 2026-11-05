@@ -2,7 +2,7 @@ package entities;
 
 public class LaserBoss extends Boss {
     public LaserBoss(double x, double y) {
-        super(x, y, 150, 12);
+        super(x, y, 450, 12);
     }
 
     @Override
@@ -10,7 +10,8 @@ public class LaserBoss extends Boss {
         double center = x + width / 2.0;
         double by = y + height;
         for (int i = -2; i <= 2; i++) {
-            pendingBullets.add(new Bullet(center - 3, by, i * 2.0,
+            double startX = center + (i * 15);
+            pendingBullets.add(new Bullet(startX, by, i * 1.5,
                     5, false, damage));
         }
     }
