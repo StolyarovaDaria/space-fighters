@@ -5,9 +5,11 @@ public class InputHandler implements KeyListener {
     private boolean up, down, left, right, shoot;
     private boolean pause, start;
     private boolean diff1, diff2, diff3;
+    private boolean upgradeHp, upgradeDamage, upgradeSpeed;
     private boolean menu;
     private boolean pauseConsumed = true;
     private boolean startConsumed = true;
+    private boolean upHpConsumed = true, upDmgConsumed = true, upSpdConsumed = true;
     public boolean isUp()    { return up;    }
     public boolean isDown()  { return down;  }
     public boolean isLeft()  { return left;  }
@@ -31,6 +33,27 @@ public class InputHandler implements KeyListener {
         }
         return false;
     }
+    public boolean isUpgradeHp() {
+        if (upgradeHp && upHpConsumed) {
+            upHpConsumed = false;
+            return true;
+        }
+        return false;
+    }
+    public boolean isUpgradeDamage() {
+        if (upgradeDamage && upDmgConsumed) {
+            upDmgConsumed = false;
+            return true;
+        }
+        return false;
+    }
+    public boolean isUpgradeSpeed() {
+        if (upgradeSpeed && upSpdConsumed) {
+            upSpdConsumed = false;
+            return true;
+        }
+        return false;
+    }
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W, KeyEvent.VK_UP    -> up    = true;
@@ -44,6 +67,9 @@ public class InputHandler implements KeyListener {
             case KeyEvent.VK_1 -> diff1 = true;
             case KeyEvent.VK_2 -> diff2 = true;
             case KeyEvent.VK_3 -> diff3 = true;
+            case KeyEvent.VK_7 -> upgradeHp = true;
+            case KeyEvent.VK_8 -> upgradeDamage = true;
+            case KeyEvent.VK_9 -> upgradeSpeed = true;
         }
     }
     public void keyReleased(KeyEvent e) {
@@ -59,6 +85,9 @@ public class InputHandler implements KeyListener {
             case KeyEvent.VK_M -> menu = false;
             case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> { pause = false; pauseConsumed = true; }
             case KeyEvent.VK_ENTER -> { start = false; startConsumed = true; }
+            case KeyEvent.VK_7 -> { upgradeHp = false; upHpConsumed = true; }
+            case KeyEvent.VK_8 -> { upgradeDamage = false; upDmgConsumed = true; }
+            case KeyEvent.VK_9 -> { upgradeSpeed = false; upSpdConsumed = true; }
 
         }
     }
