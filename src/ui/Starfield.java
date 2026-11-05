@@ -27,7 +27,14 @@ public class Starfield {
         g.setColor(Color.WHITE);
         for (int i = 0; i < 100; i++) {
             int size = (speed[i] == 1) ? 3 : (speed[i] == 2) ? 4 : 6;
-            g.setColor(Color.WHITE);
+            if (size == 6) {
+                g.setColor(new Color(150, 150, 170));
+            } else if (size == 4) {
+                g.setColor(new Color(100, 100, 130));
+            } else {
+                g.setColor(new Color(60, 60, 90));
+            }
+
             g.fillRect(x[i], y[i], size, size);
             y[i] += speed[i];
             if (y[i] > 600) {
