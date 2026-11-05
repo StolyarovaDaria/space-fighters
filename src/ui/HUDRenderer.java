@@ -20,6 +20,9 @@ public class HUDRenderer {
         String waveText = "Wave: " + manager.getSpawnManager().getWave();
         g.drawString(waveText, 680, 30);
 
+        g.setColor(Color.YELLOW);
+        g.drawString("Coins: " + manager.getUpgradeManager().getCoins(), 680, 55);
+
         int hp = manager.getPlayer().getHp();
 
         int maxHp = manager.getPlayer().getMaxHp();
