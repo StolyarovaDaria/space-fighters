@@ -65,17 +65,17 @@ public class MenuRenderer {
 
         g.setColor(Color.RED);
         g.setFont(fontTitle);
-        g.drawString("GAME OVER", 230, 240);
+        g.drawString("GAME OVER", 250, 240);
 
         g.setColor(Color.WHITE);
         g.setFont(fontMenu);
         String scoreText = "Your Score: " + manager.getScoreManager().getScore();
-        g.drawString(scoreText, 300, 320);
+        g.drawString(scoreText, 320, 320);
 
         String highText = "High Score: " + manager.getScoreManager().getHighScore();
-        g.drawString(highText, 300, 360);
+        g.drawString(highText, 310, 360);
 
         g.setFont(fontSmall);
-        g.drawString("Press ENTER to restart", 320, 430);
+        g.drawString("Press ENTER to restart", 305, 430);
     }
 }

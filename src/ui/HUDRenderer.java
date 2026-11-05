@@ -9,6 +9,7 @@ public class HUDRenderer {
 
     private final Font font = new Font("Arial", Font.BOLD, 18);
     private final Font comboFont = new Font("Arial", Font.BOLD, 24);
+    private final Font statsFont = new Font("Arial", Font.PLAIN, 16);
 
     public void draw(Graphics2D g, GameManager manager) {
         g.setFont(font);
@@ -37,11 +38,17 @@ public class HUDRenderer {
 
         g.setColor(Color.WHITE);
         g.drawString("HP: " + hp + "/" + maxHp, 230, 86);
+
+        g.setFont(statsFont);
+        g.setColor(new Color(180, 180, 180));
+        g.drawString("Damage: " + manager.getPlayer().getDamage(), 20, 110);
+        g.drawString("Speed: " + manager.getPlayer().getSpeed(), 20, 130);
         int combo = manager.getComboManager().getCombo();
+
         if (combo > 1) {
             g.setFont(comboFont);
             g.setColor(Color.YELLOW);
-            g.drawString("COMBO x" + combo, 20, 120);
+            g.drawString("COMBO x" + combo, 20, 160);
         }
     }
 }
