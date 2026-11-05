@@ -18,6 +18,7 @@ public class Player extends GameObject {
     private boolean hasArmor, hasLifesteal;
     private long lastShotTime, shotCooldown = INITIAL_SHOT_COOLDOWN;
     private long shieldEndTime, speedEndTime, invulnEndTime;
+    private long fireRateEndTime = 0;
 
     public Player(double x, double y, int maxHp) {
         super(x, y);
@@ -39,6 +40,11 @@ public class Player extends GameObject {
     public void stopY() { dy = 0; }
 
     public List<Bullet> shoot() {
+        if (fireRateEndTime > 0 && System.currentTimeMillis() > fireRateEndTime) {
+            shotCooldown = INITIAL_SHOT_COOLDOWN;
+            fireRateEndTime = 0;
+        }
+
         long now = System.currentTimeMillis();
         if (now - lastShotTime < shotCooldown) return null;
         lastShotTime = now;
@@ -49,7 +55,12 @@ public class Player extends GameObject {
     }
 
     public void heal(int amount) { hp = Math.min(maxHp, hp + amount); }
-    public void speedUpFireRate() { shotCooldown = MIN_SHOT_COOLDOWN; }
+
+    public void speedUpFireRate() {
+        shotCooldown = MIN_SHOT_COOLDOWN;                 
+        fireRateEndTime = System.currentTimeMillis() + 5000;
+    }
+
     public void activateShield() { shieldEndTime = System.currentTimeMillis() + SHIELD_DURATION_MS; }
     public void speedUp() { speedEndTime = System.currentTimeMillis() + SPEED_DURATION_MS; }
     public void upgradeMaxHp(int amount) {

@@ -9,7 +9,7 @@ public class Boss extends Enemy {
     private long lastBossShotTime;
 
     public Boss(double x, double y) {
-        this(x, y, 900, 10);          // было 300 — теперь 3x
+        this(x, y, 900, 10); 
     }
 
     protected Boss(double x, double y, int hp, int damage) {
@@ -22,7 +22,6 @@ public class Boss extends Enemy {
 
     @Override
     public Rectangle getBounds() {
-        // Убираем прозрачные края картинки: по 20px с каждой стороны
         return new Rectangle((int) x + 20, (int) y + 20, width - 40, height - 40);
     }
 
