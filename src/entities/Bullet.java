@@ -10,13 +10,18 @@ public class Bullet extends GameObject {
 
     public Bullet(double x, double y, double dx, double dy,
                   boolean fromPlayer, int damage) {
+        this(x, y, dx, dy, fromPlayer, damage, 6, 12);
+    }
+
+    public Bullet(double x, double y, double dx, double dy,
+                  boolean fromPlayer, int damage, int width, int height) {
         super(x, y);
         this.dx = dx;
         this.dy = dy;
         this.fromPlayer = fromPlayer;
         this.damage = damage;
-        width = 6;
-        height = 12;
+        this.width = width;
+        this.height = height;
         hp = 1;
     }
 
@@ -26,6 +31,6 @@ public class Bullet extends GameObject {
         if (y < -100 || y > 700 || x < -100 || x > 900) alive = false;
     }
 
-    public int getDamage()      { return damage; }
+    public int getDamage() { return damage; }
     public boolean isFromPlayer() { return fromPlayer; }
 }

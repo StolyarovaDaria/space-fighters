@@ -2,10 +2,7 @@ package entities;
 
 public class PowerUp extends GameObject {
     public enum Type {
-        HEAL,
-        FIRE_RATE,
-        SHIELD,
-        SPEED
+        HEAL, FIRE_RATE, SHIELD, SPEED, RARE_ARMOR, RARE_LIFESTEAL
     }
 
     private final Type type;
@@ -13,8 +10,7 @@ public class PowerUp extends GameObject {
     public PowerUp(double x, double y, Type type) {
         super(x, y);
         this.type = type;
-        width = 24;
-        height = 24;
+        width = height = 24;
         hp = 1;
         dy = 1.5;
     }
