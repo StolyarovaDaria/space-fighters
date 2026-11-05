@@ -5,7 +5,9 @@ public class PowerUp extends GameObject {
         HEAL,
         FIRE_RATE,
         SHIELD,
-        SPEED
+        SPEED,
+        RARE_ARMOR,
+        RARE_LIFESTEAL
     }
 
     private final Type type;

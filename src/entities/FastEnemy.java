@@ -2,13 +2,15 @@ package entities;
 
 public class FastEnemy extends Enemy {
     public FastEnemy(double x, double y, double speed) {
-        super(x, y, speed);
-        width  = 28;
-        height = 28;
-        hp     = 20;
-        dy     = speed + 0.5;
-        dx     = (Math.random() - 0.5) * 1.5;
-        canStop = false;           
+        this(x, y, speed, 20, 5);
+    }
+
+    public FastEnemy(double x, double y, double speed, int hp, int damage) {
+        super(x, y, speed, hp, damage);
+        width = height = 28;
+        dy = speed + 0.5;
+        dx = (Math.random() - 0.5) * 1.5;
+        canStop = false;
     }
 
     @Override
