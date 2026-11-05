@@ -33,17 +33,30 @@ public class MenuRenderer {
         g.drawString("3 - Hard", 460, 490);
     }
 
-    public void drawPause(Graphics2D g) {
+    public void drawPause(Graphics2D g, GameManager manager) {
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, 800, 600);
 
         g.setColor(Color.WHITE);
         g.setFont(fontTitle);
-        g.drawString("PAUSED", 320, 280);
+        g.drawString("PAUSED", 310, 150);
 
         g.setFont(fontMenu);
-        g.drawString("Press P to resume", 305, 340);
-        g.drawString("Press M to return to Menu", 270, 380);
+        g.drawString("Press P to resume", 305, 220);
+        g.drawString("Press M to return to Menu", 270, 260);
+
+        g.setColor(Color.YELLOW);
+        g.setFont(fontMenu);
+        g.drawString("UPGRADES", 340, 330);
+
+        g.setColor(Color.WHITE);
+        g.setFont(fontSmall);
+
+        g.drawString("Coins: " + manager.getUpgradeManager().getCoins(), 365, 365);
+
+        g.drawString("7 - Upgrade HP (Cost 50)", 275, 410);
+        g.drawString("8 - Upgrade Damage (Cost 100)", 260, 440);
+        g.drawString("9 - Upgrade Speed (Cost 75)", 270, 470);
     }
 
     public void drawGameOver(Graphics2D g, GameManager manager) {
